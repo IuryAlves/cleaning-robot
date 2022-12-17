@@ -32,3 +32,6 @@ func (p *Polygon) Add(x, y int) {
 		},
 	)
 }
+func (p *Polygon) Length() int {
+	return len(p.Coordinates)
+}
