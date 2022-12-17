@@ -11,7 +11,12 @@ const (
 	West  Direction = "WEST"
 )
 
+type Logger interface {
+	Log(msg string, args ...any)
+}
+
 type Robot struct {
+	logger      Logger
 	location    Coordinate
 	cleanedArea Polygon
 }
@@ -19,6 +24,7 @@ type Robot struct {
 // New instantiates a new robot
 func New(x, y int) *Robot {
 	r := &Robot{
+		logger: &BasicLogger{},
 		location: Coordinate{
 			X: x,
 			Y: y,
@@ -35,6 +41,7 @@ func (r *Robot) Location() Coordinate {
 
 // Move moves the robot in a direction N steps
 func (r *Robot) Move(d Direction, steps int) error {
+	r.logger.Log("moving %v step(s) in the %s direction", steps, d)
 	switch d {
 	case North:
 		r.moveNorth(r.location.Y, steps)
