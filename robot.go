@@ -16,9 +16,9 @@ type Logger interface {
 }
 
 type Robot struct {
-	logger      Logger
-	location    Coordinate
-	cleanedArea Polygon
+	logger   Logger
+	location Coordinate
+	commands map[string]Command
 }
 
 // New instantiates a new robot
@@ -29,9 +29,16 @@ func New(x, y int) *Robot {
 			X: x,
 			Y: y,
 		},
+		commands: map[string]Command{
+			"clean": &CleanCommand{},
+		},
 	}
-	r.Clean(x, y)
+	_ = r.commands["clean"].Execute(x, y)
 	return r
+}
+
+func (r *Robot) AddCommand(name string, c Command) {
+	r.commands[name] = c
 }
 
 // Location returns the current robot location
@@ -57,59 +64,42 @@ func (r *Robot) Move(d Direction, steps int) error {
 	return nil
 }
 
-// moveEast moves the robot in the x-axis towards east cleaning any non-cleaned space
+// moveEast moves the robot in the x-axis towards east cleaning any uncleaned space
 func (r *Robot) moveEast(x, steps int) {
 	for i := x; i < x+steps; i++ {
-		r.Clean(i, r.location.Y)
+		for _, cm := range r.commands {
+			cm.Execute(i, r.location.Y)
+		}
 		r.location.X++
 	}
 }
 
-// moveWest moves the robot in the x-axis towards west cleaning any non-cleaned space
+// moveWest moves the robot in the x-axis towards west cleaning any uncleaned space
 func (r *Robot) moveWest(x, steps int) {
 	for i := x; i > x-steps; i-- {
-		r.Clean(i, r.location.Y)
+		for _, cm := range r.commands {
+			cm.Execute(i, r.location.Y)
+		}
 		r.location.X--
 	}
 }
 
-// moveNorth moves the robot in the y-axis towards north cleaning any non-cleaned space
+// moveNorth moves the robot in the y-axis towards north cleaning any uncleaned space
 func (r *Robot) moveNorth(y, steps int) {
 	for i := y; i < y+steps; i++ {
-		r.Clean(r.location.X, i)
+		for _, cm := range r.commands {
+			cm.Execute(r.location.X, i)
+		}
 		r.location.Y++
 	}
 }
 
-// moveSouth moves the robot in the y-axis towards south cleaning any non-cleaned space
+// moveSouth moves the robot in the y-axis towards south cleaning any uncleaned space
 func (r *Robot) moveSouth(y, steps int) {
 	for i := y; i > y-steps; i-- {
-		r.Clean(r.location.X, i)
+		for _, cm := range r.commands {
+			cm.Execute(r.location.X, i)
+		}
 		r.location.Y--
 	}
-}
-
-// Clean cleans a space that is not already cleaned
-func (r *Robot) Clean(x, y int) {
-	if !r.isSpaceAlreadyCleaned(x, y) {
-		r.cleanedArea.Add(
-			x,
-			y,
-		)
-	}
-}
-
-// isSpaceAlreadyCleaned checks if a given coordinate is already cleaned
-func (r *Robot) isSpaceAlreadyCleaned(x, y int) bool {
-	for _, c := range r.cleanedArea.Coordinates {
-		if c.X == x && c.Y == y {
-			return true
-		}
-	}
-	return false
-}
-
-// CleanedSpaces returns the number of cleaned spaces
-func (r *Robot) CleanedSpaces() int {
-	return r.cleanedArea.Length()
 }

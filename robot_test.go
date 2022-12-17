@@ -36,7 +36,7 @@ func TestRobot_Clean(t *testing.T) {
 	err = robot.Move(East, 3)
 	assert.NoError(t, err)
 
-	assert.Equal(t, 8, robot.CleanedSpaces())
+	assert.Equal(t, 8, robot.commands["clean"].(*CleanCommand).CleanedSpaces())
 }
 
 func TestRobot_Clean_whole_area(t *testing.T) {
@@ -53,5 +53,5 @@ func TestRobot_Clean_whole_area(t *testing.T) {
 	err = robot.Move(North, 4)
 	assert.NoError(t, err)
 
-	assert.Equal(t, 15, robot.CleanedSpaces())
+	assert.Equal(t, 15, robot.commands["clean"].(*CleanCommand).CleanedSpaces())
 }
