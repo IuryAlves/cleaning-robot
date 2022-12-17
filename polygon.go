@@ -29,5 +29,6 @@ func (p *Polygon) Add(x, y int) {
 		Coordinate{
 			X: x,
 			Y: y,
-		})
+		},
+	)
 }
