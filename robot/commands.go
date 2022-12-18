@@ -1,22 +1,28 @@
 package robot
 
-type Command interface {
-	Execute(args ...any) error
-}
-
 type CleanCommand struct {
 	cleanedArea Coordinates
+}
+
+func (c *CleanCommand) OnMove(args ...any) error {
+	_ = c.Execute(args...)
+	return nil
+}
+
+func (c *CleanCommand) OnInit(args ...any) error {
+	_ = c.Execute(args...)
+	return nil
 }
 
 func (c *CleanCommand) Execute(args ...any) error {
 	x := args[0].(int)
 	y := args[1].(int)
-	c.Clean(x, y)
+	c.clean(x, y)
 	return nil
 }
 
-// Clean cleans an uncleaned space
-func (c *CleanCommand) Clean(x, y int) {
+// clean cleans an uncleaned space
+func (c *CleanCommand) clean(x, y int) {
 	if !c.isSpaceAlreadyCleaned(x, y) {
 		c.cleanedArea.Add(
 			x,

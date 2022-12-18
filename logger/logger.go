@@ -1,4 +1,4 @@
-package cleaning_robot
+package logger
 
 import (
 	"fmt"
