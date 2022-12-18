@@ -6,7 +6,8 @@ import (
 )
 
 func Test_Robot_clean_command(t *testing.T) {
-	r := New(0, 0, &CleanCommand{})
+	r, err := New(0, 0, &CleanCommand{})
+	assert.NoError(t, err)
 	r.Move(0, 1)
 
 	clean, err := r.GetCommand("clean")
@@ -23,6 +24,9 @@ func (m *MopCommand) Name() string {
 }
 
 func (m *MopCommand) OnInit(args ...any) error {
+	x := args[0].(int)
+	y := args[1].(int)
+	m.Mop(x, y)
 	return nil
 }
 
@@ -42,12 +46,26 @@ func (m *MopCommand) MoppedSpaces() int {
 }
 
 func Test_Robot_mop_command(t *testing.T) {
-	r := New(0, 0)
+	r, err := New(0, 0)
+	assert.NoError(t, err)
 	commands := []Command{&MopCommand{}}
-	r.RegisterCommands(commands)
+	err = r.RegisterCommands(commands)
+	assert.NoError(t, err)
 	r.Move(1, 0)
 
 	mop, err := r.GetCommand("mop")
 	assert.NoError(t, err)
 	assert.Equal(t, 1, mop.(*MopCommand).MoppedSpaces())
+}
+
+func TestRobot_RegisterCommands(t *testing.T) {
+	clean := &CleanCommand{}
+	r, err := New(0, 0, clean)
+	assert.NoError(t, err)
+	commands := []Command{
+		clean,
+	}
+
+	err = r.RegisterCommands(commands)
+	assert.EqualError(t, err, "command clean is already registered")
 }

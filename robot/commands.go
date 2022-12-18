@@ -8,14 +8,14 @@ func (c *CleanCommand) Name() string {
 	return "clean"
 }
 
+// OnMove cleans the robot's new position
 func (c *CleanCommand) OnMove(args ...any) error {
-	_ = c.Execute(args...)
-	return nil
+	return c.Execute(args...)
 }
 
+// OnInit cleans the robot's current position
 func (c *CleanCommand) OnInit(args ...any) error {
-	_ = c.Execute(args...)
-	return nil
+	return c.Execute(args...)
 }
 
 func (c *CleanCommand) Execute(args ...any) error {
