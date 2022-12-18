@@ -1,4 +1,4 @@
-package cleaning_robot
+package robot
 
 type Command interface {
 	Execute(args ...any) error
@@ -27,7 +27,7 @@ func (c *CleanCommand) Clean(x, y int) {
 
 // isSpaceAlreadyCleaned checks if a given coordinate is already cleaned
 func (c *CleanCommand) isSpaceAlreadyCleaned(x, y int) bool {
-	for _, c := range c.cleanedArea.coordinates {
+	for _, c := range c.cleanedArea.GetCoordinates() {
 		if c.X == x && c.Y == y {
 			return true
 		}

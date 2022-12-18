@@ -1,4 +1,4 @@
-package cleaning_robot
+package robot
 
 import (
 	"github.com/stretchr/testify/assert"
@@ -8,7 +8,6 @@ import (
 func TestRobot_Move_north(t *testing.T) {
 	robot := New(0, 0)
 	robot.Move(North, 2)
-
 	assert.Equal(t, 0, robot.Location().X)
 	assert.Equal(t, 2, robot.Location().Y)
 }

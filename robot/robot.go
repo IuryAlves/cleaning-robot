@@ -1,6 +1,9 @@
-package cleaning_robot
+package robot
 
-import "fmt"
+import (
+	"fmt"
+	"github.com/IuryAlves/cleaning-robot"
+)
 
 type Direction string
 
@@ -24,7 +27,7 @@ type Robot struct {
 // New instantiates a new robot
 func New(x, y int) *Robot {
 	r := &Robot{
-		logger: &BasicLogger{},
+		logger: &cleaning_robot.BasicLogger{},
 		location: Coordinate{
 			X: x,
 			Y: y,

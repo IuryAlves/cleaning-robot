@@ -1,4 +1,4 @@
-package cleaning_robot
+package robot
 
 type Coordinate struct {
 	X, Y int
@@ -6,6 +6,10 @@ type Coordinate struct {
 
 type Coordinates struct {
 	coordinates []Coordinate
+}
+
+func (p *Coordinates) GetCoordinates() []Coordinate {
+	return p.coordinates
 }
 
 func (p *Coordinates) Add(x, y int) {
@@ -17,6 +21,7 @@ func (p *Coordinates) Add(x, y int) {
 		},
 	)
 }
+
 func (p *Coordinates) Length() int {
 	return len(p.coordinates)
 }
