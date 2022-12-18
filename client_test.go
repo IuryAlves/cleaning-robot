@@ -8,8 +8,10 @@ import (
 
 func TestRobot_Move_north_then_west(t *testing.T) {
 	r := robot.New(0, 0)
-	Move(r, North, 2)
-	Move(r, West, 2)
+	err := Move(r, North, 2)
+	assert.NoError(t, err)
+	err = Move(r, West, 2)
+	assert.NoError(t, err)
 
 	assert.Equal(t, -2, r.Location().X)
 	assert.Equal(t, 2, r.Location().Y)
@@ -17,15 +19,17 @@ func TestRobot_Move_north_then_west(t *testing.T) {
 
 func TestRobot_Move_south_then_east(t *testing.T) {
 	r := robot.New(0, 5)
-	Move(r, South, 1)
-	Move(r, East, 3)
+	err := Move(r, South, 1)
+	assert.NoError(t, err)
+	err = Move(r, East, 3)
+	assert.NoError(t, err)
 
 	assert.Equal(t, 3, r.Location().X)
 	assert.Equal(t, 4, r.Location().Y)
 }
 
 func TestRobot_Clean(t *testing.T) {
-	r := robot.New(1, 1)
+	r := robot.New(1, 1, &robot.CleanCommand{})
 
 	err := Move(r, North, 4)
 	assert.NoError(t, err)
@@ -38,11 +42,14 @@ func TestRobot_Clean(t *testing.T) {
 	err = Move(r, East, 3)
 	assert.NoError(t, err)
 
-	assert.Equal(t, 9, r.GetCommand("clean").(*robot.CleanCommand).CleanedSpaces())
+	clean, err := r.GetCommand("clean")
+	assert.NoError(t, err)
+
+	assert.Equal(t, 9, clean.(*robot.CleanCommand).CleanedSpaces())
 }
 
 func TestRobot_Clean_whole_area(t *testing.T) {
-	r := robot.New(1, 1)
+	r := robot.New(1, 1, &robot.CleanCommand{})
 
 	err := Move(r, North, 4)
 	assert.NoError(t, err)
@@ -55,5 +62,8 @@ func TestRobot_Clean_whole_area(t *testing.T) {
 	err = Move(r, North, 4)
 	assert.NoError(t, err)
 
-	assert.Equal(t, 15, r.GetCommand("clean").(*robot.CleanCommand).CleanedSpaces())
+	clean, err := r.GetCommand("clean")
+	assert.NoError(t, err)
+
+	assert.Equal(t, 15, clean.(*robot.CleanCommand).CleanedSpaces())
 }

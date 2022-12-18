@@ -4,6 +4,10 @@ type CleanCommand struct {
 	cleanedArea Coordinates
 }
 
+func (c *CleanCommand) Name() string {
+	return "clean"
+}
+
 func (c *CleanCommand) OnMove(args ...any) error {
 	_ = c.Execute(args...)
 	return nil

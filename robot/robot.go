@@ -1,6 +1,7 @@
 package robot
 
 import (
+	"fmt"
 	"github.com/IuryAlves/cleaning-robot/logger"
 )
 
@@ -11,6 +12,7 @@ type Logger interface {
 type Command interface {
 	OnInit(args ...any) error
 	OnMove(args ...any) error
+	Name() string
 }
 
 type Robot struct {
@@ -20,17 +22,16 @@ type Robot struct {
 }
 
 // New instantiates a new robot
-func New(x, y int) *Robot {
+func New(x, y int, c ...Command) *Robot {
 	r := &Robot{
 		Logger: &logger.BasicLogger{},
 		location: Coordinate{
 			X: x,
 			Y: y,
 		},
-		commands: map[string]Command{
-			"clean": &CleanCommand{},
-		},
+		commands: map[string]Command{},
 	}
+	r.RegisterCommands(c)
 	r.OnInit()
 	return r
 }
@@ -47,12 +48,18 @@ func (r *Robot) OnMove() {
 	}
 }
 
-func (r *Robot) AddCommand(name string, c Command) {
-	r.commands[name] = c
+func (r *Robot) RegisterCommands(commands []Command) {
+	for _, c := range commands {
+		r.commands[c.Name()] = c
+	}
 }
 
-func (r *Robot) GetCommand(name string) Command {
-	return r.commands[name]
+func (r *Robot) GetCommand(name string) (Command, error) {
+	c := r.commands[name]
+	if c == nil {
+		return nil, fmt.Errorf("command %s is not registered", name)
+	}
+	return c, nil
 }
 
 // Location returns the current robot location
