@@ -1,21 +1,21 @@
-package cleaning_robot
+package robot
 
 import (
 	"fmt"
-	"github.com/IuryAlves/cleaning-robot/robot"
 )
 
 type Direction string
 
 const (
-	North Direction = "NORTH"
-	South Direction = "SOUTH"
-	East  Direction = "EAST"
-	West  Direction = "WEST"
+	North Direction = "north"
+	South Direction = "south"
+	East  Direction = "east"
+	West  Direction = "west"
 )
 
-// Move converts a direction and steps to x,y coordinates and moves the Robot
-func Move(r *robot.Robot, d Direction, steps int) error {
+// MoveToDirection is an adapter that translates a direction and a number of steps to x,y coordinates
+// It calls robot.Move passing the x,y coordinates
+func MoveToDirection(r *Robot, d Direction, steps int) error {
 	r.Logger.Log("moving %v step(s) in the %s direction", steps, d)
 	switch d {
 	case North:
