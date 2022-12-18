@@ -4,8 +4,9 @@ test:
 
 .PHONY: fmt
 fmt:
-	gofmt -w robot client.go client_test.go
+	 gofmt -w $(shell find . -iname '*.go' -not -path "./vendor/*" | xargs)
+
 
 .PHONY: lint
 lint:
-	test $(shell gofmt -l robot client.go client_test.go | wc -l) = 0 || exit 1
+	test $(shell gofmt -l robot server main.go | wc -l) = 0 || exit 1
