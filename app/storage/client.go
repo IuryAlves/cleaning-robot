@@ -26,18 +26,18 @@ func New(options ...func(*Client)) *Client {
 }
 
 type InsertRequest struct {
-	Timestamp time.Time `json:"timestamp"`
-	Commands int `json:"commands"`
-	Result int `json:"result"`
-	Duration time.Duration `json:"duration"`
+	Timestamp time.Time     `json:"timestamp"`
+	Commands  int           `json:"commands"`
+	Result    int           `json:"result"`
+	Duration  time.Duration `json:"duration"`
 }
 
 func (c *Client) Insert(ctx context.Context, i InsertRequest) error {
 	execution := &Executions{
 		Timestamp: i.Timestamp,
-		Commands: i.Commands,
-		Result: i.Result,
-		Duration: i.Duration,
+		Commands:  i.Commands,
+		Result:    i.Result,
+		Duration:  i.Duration,
 	}
 	_, err := c.db.NewInsert().Model(execution).Exec(ctx)
 	return err
@@ -48,7 +48,7 @@ func (c *Client) GetDB() *bun.DB {
 }
 
 func WithPostgres() func(*Client) {
-	return func(s *Client ) {
+	return func(s *Client) {
 		host := os.Getenv("DATABASE_HOST")
 		if host == "" {
 			fmt.Println(errors.New("env DATABASE_HOST is empty"))
@@ -83,13 +83,12 @@ func WithPostgres() func(*Client) {
 			pgdriver.WithPassword(password),
 			pgdriver.WithDatabase(dbName),
 			pgdriver.WithApplicationName("robot"),
-			pgdriver.WithDialTimeout(5 * time.Second),
-			pgdriver.WithReadTimeout(5 * time.Second),
-			pgdriver.WithWriteTimeout(5 * time.Second),
+			pgdriver.WithDialTimeout(5*time.Second),
+			pgdriver.WithReadTimeout(5*time.Second),
+			pgdriver.WithWriteTimeout(5*time.Second),
 		)
 
 		sqldb := sql.OpenDB(pgconn)
 		s.db = bun.NewDB(sqldb, pgdialect.New())
 	}
 }
-

@@ -8,7 +8,7 @@ import (
 )
 
 type Service struct {
-	robot *robot.Robot
+	robot         *robot.Robot
 	StorageClient *storage.Client
 }
 
@@ -36,7 +36,6 @@ func (svc *Service) Move(ctx context.Context, commands []Command) (storage.Inser
 	return svc.AddExecution(ctx, len(commands), t)
 }
 
-
 func (svc *Service) AddExecution(ctx context.Context, commands int, t time.Time) (storage.InsertRequest, error) {
 	duration := time.Since(t).Nanoseconds()
 	cleanCommand, err := svc.robot.GetCommand("clean")
@@ -44,22 +43,22 @@ func (svc *Service) AddExecution(ctx context.Context, commands int, t time.Time)
 		return storage.InsertRequest{}, err
 	}
 	i := storage.InsertRequest{
-		Result: cleanCommand.(*robot.CleanCommand).CleanedSpaces(),
-		Commands: commands,
-		Duration: time.Duration(duration),
+		Result:    cleanCommand.(*robot.CleanCommand).CleanedSpaces(),
+		Commands:  commands,
+		Duration:  time.Duration(duration),
 		Timestamp: t,
 	}
 	return i, svc.StorageClient.Insert(ctx, i)
 }
 
-func WithRobot(r *robot.Robot) func (*Service) {
-	return func (s *Service) {
+func WithRobot(r *robot.Robot) func(*Service) {
+	return func(s *Service) {
 		s.robot = r
 	}
 }
 
-func WithDefaultStorageClient() func (*Service) {
-	return func (s *Service) {
+func WithDefaultStorageClient() func(*Service) {
+	return func(s *Service) {
 		s.StorageClient = storage.New(storage.WithPostgres())
 	}
 }

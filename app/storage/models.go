@@ -8,9 +8,9 @@ import (
 type Executions struct {
 	bun.BaseModel `bun:"table:executions"`
 
-	ID	 int64  `bun:",pk,autoincrement"`
+	ID        int64 `bun:",pk,autoincrement"`
 	Timestamp time.Time
-	Commands int
-	Result int
-	Duration time.Duration
+	Commands  int
+	Result    int
+	Duration  time.Duration
 }
