@@ -25,22 +25,29 @@ func New(options ...func(*Client)) *Client {
 	return c
 }
 
-type InsertRequest struct {
-	Timestamp time.Time     `json:"timestamp"`
-	Commands  int           `json:"commands"`
-	Result    int           `json:"result"`
-	Duration  time.Duration `json:"duration"`
+func (c *Client) InsertExecution(ctx context.Context, e Executions) (Executions, error) {
+	result, err := c.db.NewInsert().Model(&e).Exec(ctx)
+	if err != nil {
+		return Executions{}, err
+	}
+	id, err := result.LastInsertId()
+	if err != nil {
+		return Executions{}, nil
+	}
+	r, err := c.GetExecution(ctx, id)
+	if err != nil {
+		return Executions{}, err
+	}
+	return r, nil
 }
 
-func (c *Client) Insert(ctx context.Context, i InsertRequest) error {
-	execution := &Executions{
-		Timestamp: i.Timestamp,
-		Commands:  i.Commands,
-		Result:    i.Result,
-		Duration:  i.Duration,
-	}
-	_, err := c.db.NewInsert().Model(execution).Exec(ctx)
-	return err
+func (c *Client) GetExecution(ctx context.Context, id int64) (Executions, error) {
+	exec := Executions{}
+	err := c.db.NewSelect().
+		Model(&exec).
+		Where("? = ?", bun.Ident("id"), id).
+		Scan(ctx)
+	return exec, err
 }
 
 func (c *Client) GetDB() *bun.DB {

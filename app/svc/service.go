@@ -25,30 +25,34 @@ type Command struct {
 	Steps     int             `json:"steps"`
 }
 
-func (svc *Service) Move(ctx context.Context, commands []Command) (storage.InsertRequest, error) {
+func (svc *Service) Move(ctx context.Context, commands []Command) (storage.Executions, error) {
 	t := time.Now()
 	for _, c := range commands {
 		err := robot.MoveToDirection(svc.robot, c.Direction, c.Steps)
 		if err != nil {
-			return storage.InsertRequest{}, err
+			return storage.Executions{}, err
 		}
 	}
-	return svc.AddExecution(ctx, len(commands), t)
+	return svc.InsertExecution(ctx, len(commands), t)
 }
 
-func (svc *Service) AddExecution(ctx context.Context, commands int, t time.Time) (storage.InsertRequest, error) {
+func (svc *Service) InsertExecution(ctx context.Context, commands int, t time.Time) (storage.Executions, error) {
 	duration := time.Since(t).Nanoseconds()
 	cleanCommand, err := svc.robot.GetCommand("clean")
 	if err != nil {
-		return storage.InsertRequest{}, err
+		return storage.Executions{}, err
 	}
-	i := storage.InsertRequest{
+	e := storage.Executions{
 		Result:    cleanCommand.(*robot.CleanCommand).CleanedSpaces(),
 		Commands:  commands,
 		Duration:  time.Duration(duration),
 		Timestamp: t,
 	}
-	return i, svc.StorageClient.Insert(ctx, i)
+	r, err := svc.StorageClient.InsertExecution(ctx, e)
+	if err != nil {
+		return storage.Executions{}, err
+	}
+	return r, nil
 }
 
 func WithRobot(r *robot.Robot) func(*Service) {
