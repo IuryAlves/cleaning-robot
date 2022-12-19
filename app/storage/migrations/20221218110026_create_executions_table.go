@@ -2,7 +2,7 @@ package migrations
 
 import (
 	"context"
-	"github.com/IuryAlves/cleaning-robot/storage"
+	"github.com/IuryAlves/cleaning-robot/app/storage"
 	"github.com/uptrace/bun"
 )
 
