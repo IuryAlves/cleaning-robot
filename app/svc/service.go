@@ -2,8 +2,8 @@ package svc
 
 import (
 	"context"
+	"github.com/IuryAlves/cleaning-robot/app/storage"
 	"github.com/IuryAlves/cleaning-robot/robot"
-	"github.com/IuryAlves/cleaning-robot/storage"
 	"time"
 )
 
@@ -36,6 +36,7 @@ func (svc *Service) Move(ctx context.Context, commands []Command) (storage.Inser
 	return svc.AddExecution(ctx, len(commands), t)
 }
 
+
 func (svc *Service) AddExecution(ctx context.Context, commands int, t time.Time) (storage.InsertRequest, error) {
 	duration := time.Since(t).Nanoseconds()
 	cleanCommand, err := svc.robot.GetCommand("clean")
@@ -59,6 +60,6 @@ func WithRobot(r *robot.Robot) func (*Service) {
 
 func WithDefaultStorageClient() func (*Service) {
 	return func (s *Service) {
-		s.StorageClient = storage.New()
+		s.StorageClient = storage.New(storage.WithPostgres())
 	}
 }
