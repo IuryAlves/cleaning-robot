@@ -3,6 +3,7 @@ package server
 import (
 	"bytes"
 	"encoding/json"
+	"github.com/IuryAlves/cleaning-robot"
 	"github.com/IuryAlves/cleaning-robot/robot"
 	"github.com/stretchr/testify/assert"
 	"net/http"
@@ -13,7 +14,7 @@ import (
 func TestServer(t *testing.T) {
 	d := EnterPathData{
 		Start: Start{X: 10, Y: 22},
-		Commands: []Command{
+		Commands: []svc.Command{
 			{
 				Direction: robot.East,
 				Steps:     2,
@@ -43,7 +44,7 @@ func TestServer(t *testing.T) {
 func TestServer_clean3x3_area(t *testing.T) {
 	d := EnterPathData{
 		Start: Start{X: 0, Y: 0},
-		Commands: []Command{
+		Commands: []svc.Command{
 			{
 				Direction: robot.North,
 				Steps:     2,

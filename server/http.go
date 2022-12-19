@@ -1,79 +1,28 @@
 package server
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 	"github.com/IuryAlves/cleaning-robot/robot"
+	"github.com/IuryAlves/cleaning-robot/svc"
 	"net/http"
-	"time"
 )
 
+// Start TODO: maybe move to svc ?
 type Start struct {
 	X int `json:"x"`
 	Y int `json:"y"`
 }
 
-type Command struct {
-	Direction robot.Direction `json:"direction"`
-	Steps     int             `json:"steps"`
-}
-
+// EnterPathData TODO: maybe move to svc ?
 type EnterPathData struct {
-	Start    Start     `json:"start"`
-	Commands []Command `json:"commands"`
-}
-
-type Result struct {
-	Id        int
-	Timestamp time.Time
-	Commands  int
-	Result    int
-	Duration  int64
-}
-
-func execCommands(r *robot.Robot, commands []Command) error {
-	for _, c := range commands {
-		err := robot.MoveToDirection(r, c.Direction, c.Steps)
-		if err != nil {
-			return err
-		}
-	}
-	return nil
-}
-
-func getCleanedSpaces(r *robot.Robot) (int, error) {
-	c, err := r.GetCommand("clean")
-	if err != nil {
-		return 0, err
-	}
-	return c.(*robot.CleanCommand).CleanedSpaces(), nil
-}
-
-func writeResults(w http.ResponseWriter, r *robot.Robot, c []Command, t time.Time) {
-	// Get number of cleaned spaces
-	cs, err := getCleanedSpaces(r)
-	if err != nil {
-		fmt.Fprint(w, err.Error())
-		w.WriteHeader(500)
-		return
-	}
-	result := Result{
-		Id:        1,
-		Timestamp: time.Now(),
-		Commands:  len(c),
-		Result:    cs,
-		Duration:  time.Since(t).Nanoseconds(),
-	}
-
-	// Write result
-	err = json.NewEncoder(w).Encode(result)
-	if err != nil {
-		fmt.Fprint(w, err.Error())
-		w.WriteHeader(500)
-	}
+	Start    Start         `json:"start"`
+	Commands []svc.Command `json:"commands"`
 }
 
 func EnterPathHandler(w http.ResponseWriter, req *http.Request) {
+	ctx := context.Background()
 	// parse request data
 	var d EnterPathData
 	err := json.NewDecoder(req.Body).Decode(&d)
@@ -89,12 +38,15 @@ func EnterPathHandler(w http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	t := time.Now()
-	// run robot commands
-	err = execCommands(r, d.Commands)
+	service := svc.New(svc.WithRobot(r), svc.WithDefaultStorageClient())
+	resp, err := service.Move(ctx, d.Commands)
 	if err != nil {
 		fmt.Fprint(w, err.Error())
 		return
 	}
-	writeResults(w, r, d.Commands, t)
+	err = json.NewEncoder(w).Encode(resp)
+	if err != nil {
+		fmt.Fprint(w, err.Error())
+		w.WriteHeader(500)
+	}
 }
