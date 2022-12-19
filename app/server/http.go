@@ -4,8 +4,8 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"github.com/IuryAlves/cleaning-robot/app/svc"
 	"github.com/IuryAlves/cleaning-robot/robot"
-	"github.com/IuryAlves/cleaning-robot/svc"
 	"net/http"
 )
 

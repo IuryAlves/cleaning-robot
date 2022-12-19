@@ -3,7 +3,8 @@ package server
 import (
 	"bytes"
 	"encoding/json"
-	"github.com/IuryAlves/cleaning-robot"
+	"github.com/IuryAlves/cleaning-robot/app/storage"
+	"github.com/IuryAlves/cleaning-robot/app/svc"
 	"github.com/IuryAlves/cleaning-robot/robot"
 	"github.com/stretchr/testify/assert"
 	"net/http"
@@ -34,7 +35,7 @@ func TestServer(t *testing.T) {
 
 	assert.Equal(t, response.Result().StatusCode, 200)
 
-	var result Result
+	var result storage.Executions
 	err = json.Unmarshal(response.Body.Bytes(), &result)
 	assert.NoError(t, err)
 	assert.Equal(t, 4, result.Result)
@@ -76,7 +77,7 @@ func TestServer_clean3x3_area(t *testing.T) {
 
 	assert.Equal(t, response.Result().StatusCode, 200)
 
-	var result Result
+	var result storage.Executions
 	err = json.Unmarshal(response.Body.Bytes(), &result)
 	assert.NoError(t, err)
 	assert.Equal(t, 9, result.Result)
