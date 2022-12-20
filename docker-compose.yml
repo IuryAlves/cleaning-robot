@@ -6,16 +6,16 @@ services:
       - "8080:8080"
     command: --server
     environment:
-      DATABASE_HOST: database
-      DATABASE_PORT: "5432"
-      DATABASE_USER: test
-      DATABASE_PASSWORD: test
-      DATABASE_NAME: test
+      DATABASE_HOST: $DATABASE_HOST
+      DATABASE_PORT: $DATABASE_PORT
+      DATABASE_USER: $DATABASE_USER
+      DATABASE_PASSWORD: $DATABASE_PASSWORD
+      DATABASE_NAME: $DATABASE_NAME
   database:
     image: postgres:15-alpine
     restart: always
     ports:
       - "5432:5432"
     environment:
-      POSTGRES_PASSWORD: test
-      POSTGRES_USER: test
+      POSTGRES_PASSWORD: $DATABASE_PASSWORD
+      POSTGRES_USER: $DATABASE_USER

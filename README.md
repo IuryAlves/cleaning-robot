@@ -24,22 +24,35 @@ fmt.Println(r.Location()) // {1, 1}
 
 For the full robot documentation see [here](https://github.com/IuryAlves/cleaning-robot/tree/main/robot/README.md).
 
-## HTTP Server
+## Running the application
 
-### Running locally
+### Configure the .env file
+
+Create a copy of `.env.example` and replace the values with the configuration from your environment.
+> **NOTE:** The default configuration `.env.example` is meant to work on a local environment.
+
 
 ```shell
-go run main.go
+cp .env.example .env
 ```
 
-### Running in docker
+The `.env` file is read automatically by `docker compose`.
 
 ```shell
 docker compose build
 docker compose up
 ```
 
-### Testing the HTTP server
+### Running the migrations
+
+When the database is created, the migrations need to run.
+The easiest way of running the migrations is by doing `docker compose exec`
+
+```shell
+docker compose exec server ./cleaning-robot --migrate 
+```
+
+### Testing the app
 
 ```shell
 curl \
