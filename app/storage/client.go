@@ -25,20 +25,12 @@ func New(options ...func(*Client)) *Client {
 	return c
 }
 
-func (c *Client) InsertExecution(ctx context.Context, e Executions) (Executions, error) {
-	result, err := c.db.NewInsert().Model(&e).Exec(ctx)
+func (c *Client) InsertExecution(ctx context.Context, execution Executions) (Executions, error) {
+	_, err := c.db.NewInsert().Model(&execution).Exec(ctx)
 	if err != nil {
 		return Executions{}, err
 	}
-	id, err := result.LastInsertId()
-	if err != nil {
-		return Executions{}, nil
-	}
-	r, err := c.GetExecution(ctx, id)
-	if err != nil {
-		return Executions{}, err
-	}
-	return r, nil
+	return execution, nil
 }
 
 func (c *Client) GetExecution(ctx context.Context, id int64) (Executions, error) {

@@ -42,7 +42,6 @@ func EnterPathHandler(w http.ResponseWriter, req *http.Request) {
 	resp, err := service.Move(ctx, d.Commands)
 	if err != nil {
 		fmt.Fprint(w, err.Error())
-		w.WriteHeader(500)
 		return
 	}
 	err = json.NewEncoder(w).Encode(resp)
