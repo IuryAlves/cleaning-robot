@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/IuryAlves/cleaning-robot/app/svc"
+	"github.com/IuryAlves/cleaning-robot/logger"
 	"github.com/IuryAlves/cleaning-robot/robot"
 	"net/http"
 )
@@ -22,6 +23,9 @@ type EnterPathData struct {
 }
 
 func EnterPathHandler(w http.ResponseWriter, req *http.Request) {
+	l := logger.BasicLogger{}
+	l.Log("Handling request")
+	defer l.Log("Request ended %s")
 	ctx := context.Background()
 	// parse request data
 	var d EnterPathData
