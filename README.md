@@ -1,6 +1,11 @@
 # cleaning-robot
 
-Package cleaning-robot implements a robot
+This project simulates the behavior of a cleaning robot
+
+This project is divided into two directories: `robot` and `app`
+
+The `robot` package contains the core logic of the robot, and it can be used as a standalone library.
+The `app` package is a http api that stores the robot's cleaning data into a Postgres database.
 
 ## Installing
 
@@ -8,7 +13,7 @@ Package cleaning-robot implements a robot
 go get github.com/IuryAlves/cleaning-robot
 ```
 
-## Using as a library
+## Using as a standalone library
 
 ````go
 package main
