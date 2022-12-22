@@ -25,6 +25,17 @@ type Command struct {
 	Steps     int             `json:"steps"`
 }
 
+type Start struct {
+	X int `json:"x"`
+	Y int `json:"y"`
+}
+
+type MoveRequest struct {
+	Start    Start     `json:"start"`
+	Commands []Command `json:"commands"`
+}
+
+
 func (svc *Service) Move(ctx context.Context, commands []Command) (storage.Executions, error) {
 	t := time.Now()
 	for _, c := range commands {

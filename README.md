@@ -44,8 +44,7 @@ cp .env.example .env
 The `.env` file is read automatically by `docker compose`.
 
 ```shell
-docker compose build
-docker compose up
+docker compose up --build
 ```
 
 ### Running the migrations
@@ -74,4 +73,17 @@ curl \
     ]
    }' \
   localhost:8080/tibber-developer-test/enter-path
+```
+
+## Tests
+
+### Unit tests
+
+```shell
+make test
+```
+
+### Integration tests
+```shell
+make integration-test
 ```

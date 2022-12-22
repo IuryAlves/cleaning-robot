@@ -10,40 +10,28 @@ import (
 	"net/http"
 )
 
-// Start TODO: maybe move to svc ?
-type Start struct {
-	X int `json:"x"`
-	Y int `json:"y"`
-}
-
-// EnterPathData TODO: maybe move to svc ?
-type EnterPathData struct {
-	Start    Start         `json:"start"`
-	Commands []svc.Command `json:"commands"`
-}
-
 func EnterPathHandler(w http.ResponseWriter, req *http.Request) {
 	l := logger.BasicLogger{}
 	l.Log("Handling request")
 	defer l.Log("Request ended %s")
 	ctx := context.Background()
 	// parse request data
-	var d EnterPathData
-	err := json.NewDecoder(req.Body).Decode(&d)
+	var mr svc.MoveRequest
+	err := json.NewDecoder(req.Body).Decode(&mr)
 	if err != nil {
 		fmt.Fprint(w, err.Error())
 		return
 	}
 
 	// Create a new robot
-	r, err := robot.New(d.Start.X, d.Start.Y, &robot.CleanCommand{})
+	r, err := robot.New(mr.Start.X, mr.Start.Y, &robot.CleanCommand{})
 	if err != nil {
 		fmt.Fprint(w, err.Error())
 		return
 	}
 
 	service := svc.New(svc.WithRobot(r), svc.WithDefaultStorageClient())
-	resp, err := service.Move(ctx, d.Commands)
+	resp, err := service.Move(ctx, mr.Commands)
 	if err != nil {
 		fmt.Fprint(w, err.Error())
 		return

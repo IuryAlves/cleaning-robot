@@ -1,8 +1,9 @@
-package server
+package app
 
 import (
 	"bytes"
 	"encoding/json"
+	"github.com/IuryAlves/cleaning-robot/app/server"
 	"github.com/IuryAlves/cleaning-robot/app/storage"
 	"github.com/IuryAlves/cleaning-robot/app/svc"
 	"github.com/IuryAlves/cleaning-robot/robot"
@@ -13,8 +14,8 @@ import (
 )
 
 func TestServer(t *testing.T) {
-	d := EnterPathData{
-		Start: Start{X: 10, Y: 22},
+	d := svc.MoveRequest{
+		Start: svc.Start{X: 10, Y: 22},
 		Commands: []svc.Command{
 			{
 				Direction: robot.East,
@@ -26,12 +27,12 @@ func TestServer(t *testing.T) {
 			},
 		},
 	}
-	b, err := json.Marshal(d)
+	b, err := json.Marshal(&d)
 	assert.NoError(t, err)
 
 	request, _ := http.NewRequest(http.MethodPost, "/tibber-developer-test/enter-path", bytes.NewReader(b))
 	response := httptest.NewRecorder()
-	EnterPathHandler(response, request)
+	server.EnterPathHandler(response, request)
 
 	assert.Equal(t, response.Result().StatusCode, 200)
 
@@ -43,8 +44,8 @@ func TestServer(t *testing.T) {
 }
 
 func TestServer_clean3x3_area(t *testing.T) {
-	d := EnterPathData{
-		Start: Start{X: 0, Y: 0},
+	d := svc.MoveRequest {
+		Start: svc.Start{X: 0, Y: 0},
 		Commands: []svc.Command{
 			{
 				Direction: robot.North,
@@ -68,12 +69,12 @@ func TestServer_clean3x3_area(t *testing.T) {
 			},
 		},
 	}
-	b, err := json.Marshal(d)
+	b, err := json.Marshal(&d)
 	assert.NoError(t, err)
 
 	request, _ := http.NewRequest(http.MethodPost, "/tibber-developer-test/enter-path", bytes.NewReader(b))
 	response := httptest.NewRecorder()
-	EnterPathHandler(response, request)
+	server.EnterPathHandler(response, request)
 
 	assert.Equal(t, response.Result().StatusCode, 200)
 
