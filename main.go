@@ -52,6 +52,10 @@ func main() {
 		if port == "" {
 			port = "8080"
 		}
+		if err := migrate(ctx); err != nil {
+			fmt.Print(err.Error())
+			os.Exit(1)
+		}
 		runServer(port)
 	case "--migrate":
 		if err := migrate(ctx); err != nil {

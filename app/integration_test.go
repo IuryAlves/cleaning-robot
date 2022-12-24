@@ -13,7 +13,7 @@ import (
 	"testing"
 )
 
-func TestServer(t *testing.T) {
+func Test_move_and_clean(t *testing.T) {
 	d := svc.MoveRequest{
 		Start: svc.Start{X: 10, Y: 22},
 		Commands: []svc.Command{
@@ -34,7 +34,7 @@ func TestServer(t *testing.T) {
 	response := httptest.NewRecorder()
 	server.EnterPathHandler(response, request)
 
-	assert.Equal(t, response.Result().StatusCode, 200)
+	assert.Equal(t, 200, response.Result().StatusCode)
 
 	var result storage.Executions
 	err = json.Unmarshal(response.Body.Bytes(), &result)
@@ -44,7 +44,7 @@ func TestServer(t *testing.T) {
 }
 
 func TestServer_clean3x3_area(t *testing.T) {
-	d := svc.MoveRequest {
+	d := svc.MoveRequest{
 		Start: svc.Start{X: 0, Y: 0},
 		Commands: []svc.Command{
 			{
@@ -76,11 +76,25 @@ func TestServer_clean3x3_area(t *testing.T) {
 	response := httptest.NewRecorder()
 	server.EnterPathHandler(response, request)
 
-	assert.Equal(t, response.Result().StatusCode, 200)
+	assert.Equal(t, 200, response.Result().StatusCode)
 
 	var result storage.Executions
 	err = json.Unmarshal(response.Body.Bytes(), &result)
 	assert.NoError(t, err)
 	assert.Equal(t, 9, result.Result)
 	assert.Equal(t, 5, result.Commands)
+}
+
+func Test_invalid_input_data(t *testing.T) {
+	d := struct{}{}
+	b, err := json.Marshal(&d)
+	assert.NoError(t, err)
+
+	request, _ := http.NewRequest(http.MethodPost, "/tibber-developer-test/enter-path", bytes.NewReader(b))
+	response := httptest.NewRecorder()
+	server.EnterPathHandler(response, request)
+
+	assert.Equal(t, 422, response.Result().StatusCode)
+	assert.Equal(t, "request must have at least one command", response.Body.String())
+
 }

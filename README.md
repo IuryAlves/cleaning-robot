@@ -50,10 +50,10 @@ docker compose up --build
 ### Running the migrations
 
 When the database is created, the migrations need to run.
-The easiest way of running the migrations is by doing `docker compose exec`
+The easiest way of running the migrations is by doing:
 
 ```shell
-docker compose exec server ./cleaning-robot --migrate 
+docker compose run server --migrate 
 ```
 
 ### Testing the app
@@ -84,6 +84,9 @@ make test
 ```
 
 ### Integration tests
+
+!! NOTE: If running the integration tests against a new database, the migrations must be run first.
+
 ```shell
 make integration-test
 ```

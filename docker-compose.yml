@@ -11,6 +11,8 @@ services:
       DATABASE_USER: $DATABASE_USER
       DATABASE_PASSWORD: $DATABASE_PASSWORD
       DATABASE_NAME: $DATABASE_NAME
+    depends_on:
+      - database
   database:
     image: postgres:15-alpine
     restart: always

@@ -33,15 +33,6 @@ func (c *Client) InsertExecution(ctx context.Context, execution Executions) (Exe
 	return execution, nil
 }
 
-func (c *Client) GetExecution(ctx context.Context, id int64) (Executions, error) {
-	exec := Executions{}
-	err := c.db.NewSelect().
-		Model(&exec).
-		Where("? = ?", bun.Ident("id"), id).
-		Scan(ctx)
-	return exec, err
-}
-
 func (c *Client) GetDB() *bun.DB {
 	return c.db
 }

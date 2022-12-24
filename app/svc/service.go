@@ -35,7 +35,6 @@ type MoveRequest struct {
 	Commands []Command `json:"commands"`
 }
 
-
 func (svc *Service) Move(ctx context.Context, commands []Command) (storage.Executions, error) {
 	t := time.Now()
 	for _, c := range commands {
