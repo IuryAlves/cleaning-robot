@@ -61,7 +61,7 @@ func (r *Robot) OnMove() {
 }
 
 // RegisterCommands registers one or move commands to the Robot
-// If the robot already as the command an error is returned
+// If the robot already has the command registered an error is returned
 func (r *Robot) RegisterCommands(commands []Command) error {
 	for _, c := range commands {
 		name := c.Name()

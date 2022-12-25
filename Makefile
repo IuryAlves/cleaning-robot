@@ -18,4 +18,4 @@ fmt:
 
 .PHONY: lint
 lint:
-	test $(shell gofmt -l robot server main.go | wc -l) = 0 || exit 1
+	test $(shell gofmt -l robot app main.go | tee /dev/stderr | wc -l) = 0 || exit 1
