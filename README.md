@@ -1,5 +1,7 @@
 # cleaning-robot
 
+![CI workflow](https://github.com/iuryalves/cleaning-robot/actions/workflows/ci.yaml/badge.svg)
+
 This project simulates the behavior of a cleaning robot
 
 This project is divided into two directories: `robot` and `app`
