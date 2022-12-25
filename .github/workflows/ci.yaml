@@ -1,0 +1,19 @@
+name: CI
+on: [push]
+jobs:
+  lint-and-tests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - uses: actions/setup-go@v3
+        with:
+          go-version: '>=1.19.0'
+
+      - name: Run lint
+        shell: bash
+        run: make lint
+
+      - name: Run unit tests
+        shell: bash
+        run: make test
