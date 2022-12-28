@@ -5,8 +5,8 @@ Package robot implements a robot.
 ## Creating a new robot
 
 ```go
-x := 0
-y := 0
+x := 0 // x position
+y := 0 // y position
 robot := New(x, y)
 ```
 
@@ -38,8 +38,8 @@ type Command interface {
 
 ### Cleaning command
 
-The robot package comes with the `CleanCommand`.
-This commands cleans any vertex that the robot touches. This includes the robot's initial position
+The robot package comes with the `CleanCommand` by default.
+This commands cleans any vertex that the robot touches. This includes the robot's initial position.
 
 #### Using the cleaning command
 
