@@ -3,8 +3,8 @@ package server
 import (
 	"context"
 	"encoding/json"
+	"github.com/IuryAlves/cleaning-robot/app/logger"
 	"github.com/IuryAlves/cleaning-robot/app/svc"
-	"github.com/IuryAlves/cleaning-robot/logger"
 	"github.com/IuryAlves/cleaning-robot/robot"
 	"net/http"
 )

@@ -5,6 +5,8 @@ the information in a database.
 
 ```shell
 ├── README.md
+├── logger
+│   ├── logger.go
 ├── server
 │   ├── http.go
 │   └── http_test.go
