@@ -9,8 +9,8 @@ import (
 
 type BasicLogger struct{}
 
-func (b *BasicLogger) Log(msg string, args ...any) {
-	_, filepath, line, ok := runtime.Caller(1)
+func (b *BasicLogger) log(msg string, args ...any) {
+	_, filepath, line, ok := runtime.Caller(2)
 	if ok {
 		// Add file and line that called the logger
 		_, filename := path.Split(filepath)
@@ -20,4 +20,14 @@ func (b *BasicLogger) Log(msg string, args ...any) {
 		msg += "\n"
 	}
 	fmt.Printf(msg, args...)
+}
+
+func (b *BasicLogger) Error(msg string, args ...any) {
+	msg = fmt.Sprintf("ERROR: %s", msg)
+	b.log(msg, args)
+}
+
+func (b *BasicLogger) Info(msg string, args ...any) {
+	msg = fmt.Sprintf("INFO: %s", msg)
+	b.log(msg, args)
 }

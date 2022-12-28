@@ -16,7 +16,6 @@ const (
 // MoveToDirection is an adapter that translates a direction and a number of steps to x,y coordinates
 // It calls robot.Move passing the x,y coordinates
 func MoveToDirection(r *Robot, d Direction, steps int) error {
-	r.Logger.Log("moving %v step(s) in the %s direction", steps, d)
 	switch d {
 	case North:
 		yPos := r.Location().Y

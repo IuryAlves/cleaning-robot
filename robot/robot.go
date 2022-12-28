@@ -2,12 +2,7 @@ package robot
 
 import (
 	"fmt"
-	"github.com/IuryAlves/cleaning-robot/logger"
 )
-
-type Logger interface {
-	Log(msg string, args ...any)
-}
 
 // Command specifies the methods that a Robot command must implement
 type Command interface {
@@ -20,7 +15,6 @@ type Command interface {
 }
 
 type Robot struct {
-	Logger Logger
 	// The current robot location
 	location Coordinate
 	// List of commands that the robot can execute
@@ -30,7 +24,6 @@ type Robot struct {
 // New instantiates a new robot
 func New(x, y int, c ...Command) (*Robot, error) {
 	r := &Robot{
-		Logger: &logger.BasicLogger{},
 		location: Coordinate{
 			X: x,
 			Y: y,
