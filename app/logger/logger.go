@@ -24,10 +24,10 @@ func (b *BasicLogger) log(msg string, args ...any) {
 
 func (b *BasicLogger) Error(msg string, args ...any) {
 	msg = fmt.Sprintf("ERROR: %s", msg)
-	b.log(msg, args)
+	b.log(msg, args...)
 }
 
 func (b *BasicLogger) Info(msg string, args ...any) {
 	msg = fmt.Sprintf("INFO: %s", msg)
-	b.log(msg, args)
+	b.log(msg, args...)
 }
