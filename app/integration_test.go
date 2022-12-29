@@ -8,9 +8,11 @@ import (
 	"github.com/IuryAlves/cleaning-robot/app/svc"
 	"github.com/IuryAlves/cleaning-robot/robot"
 	"github.com/stretchr/testify/assert"
+	"math/rand"
 	"net/http"
 	"net/http/httptest"
 	"testing"
+	"time"
 )
 
 func Test_move_and_clean(t *testing.T) {
@@ -97,4 +99,36 @@ func Test_invalid_input_data(t *testing.T) {
 	assert.Equal(t, 422, response.Result().StatusCode)
 	assert.Equal(t, "request must have at least one command", response.Body.String())
 
+}
+
+func Test_constraints(t *testing.T) {
+	d := svc.MoveRequest{
+		Start: svc.Start{
+			X: 0,
+			Y: 0,
+		},
+	}
+	rand.Seed(time.Now().Unix())
+	directions := []robot.Direction{robot.North, robot.South, robot.West, robot.East}
+	for i := 0; i < 10000; i++ {
+		randomDirection := directions[rand.Int() % len(directions)]
+		d.Commands = append(d.Commands, svc.Command{
+			Steps: 1,
+			Direction: randomDirection,
+		})
+	}
+	b, err := json.Marshal(&d)
+	assert.NoError(t, err)
+
+	request, _ := http.NewRequest(http.MethodPost, "/tibber-developer-test/enter-path", bytes.NewReader(b))
+	response := httptest.NewRecorder()
+	server.EnterPathHandler(response, request)
+
+	assert.Equal(t, 200, response.Result().StatusCode)
+
+	var result storage.Executions
+	err = json.Unmarshal(response.Body.Bytes(), &result)
+	assert.NoError(t, err)
+
+	assert.Equal(t, 10000, result.Commands)
 }
