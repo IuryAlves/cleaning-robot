@@ -9,6 +9,7 @@ import (
 	"github.com/uptrace/bun/dialect/pgdialect"
 	"github.com/uptrace/bun/driver/pgdriver"
 	"os"
+	"strconv"
 	"strings"
 	"time"
 )
@@ -64,6 +65,12 @@ func WithPostgres() func(*Client) {
 			os.Exit(1)
 		}
 
+		m := os.Getenv("DB_MAX_RETRIES")
+		if m == "" {
+			m = "10"
+		}
+		maxRetries, _ := strconv.Atoi(m)
+
 		addr := strings.Join([]string{host, port}, ":")
 		pgconn := pgdriver.NewConnector(
 			pgdriver.WithNetwork("tcp"),
@@ -78,7 +85,15 @@ func WithPostgres() func(*Client) {
 			pgdriver.WithWriteTimeout(5*time.Second),
 		)
 
-		sqldb := sql.OpenDB(pgconn)
-		s.db = bun.NewDB(sqldb, pgdialect.New())
+		for i := 0; i < maxRetries; i++ {
+			sqldb := sql.OpenDB(pgconn)
+			db := bun.NewDB(sqldb, pgdialect.New())
+			err := db.Ping()
+			if err == nil {
+				s.db = db
+				break
+			}
+			time.Sleep(5 * time.Second)
+		}
 	}
 }
