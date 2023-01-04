@@ -111,9 +111,9 @@ func Test_constraints(t *testing.T) {
 	rand.Seed(time.Now().Unix())
 	directions := []robot.Direction{robot.North, robot.South, robot.West, robot.East}
 	for i := 0; i < 10000; i++ {
-		randomDirection := directions[rand.Int()%len(directions)]
+		randomDirection := directions[rand.Int() % len(directions)]
 		d.Commands = append(d.Commands, svc.Command{
-			Steps:     1,
+			Steps: 1,
 			Direction: randomDirection,
 		})
 	}
